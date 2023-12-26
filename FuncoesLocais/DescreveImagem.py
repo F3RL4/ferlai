@@ -1,19 +1,57 @@
 import openai
 import os
+import base64
+import requests
+from tkinter import Tk, filedialog
 
-chave = os.getenv("OPENAI_API_KEY")
+# Chave da API OpenAI
+api_key = os.getenv("OPENAI_API_KEY")
 
-imagem_url = "https://oaidalleapiprodscus.blob.core.windows.net/private/org-z0TQu3wcrWfDHPgaBxvsqPy1/user-u6KYJPSW7m18DAzo3kPu14Pj/img-MJysuQaipXgROF20yEueLHK5.png?st=2023-12-26T18%3A26%3A16Z&se=2023-12-26T20%3A26%3A16Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-12-25T21%3A42%3A32Z&ske=2023-12-26T21%3A42%3A32Z&sks=b&skv=2021-08-06&sig=wTPEc6s%2Bb8kAFiEcF%2Bmx2OyEWGVxzN3AHrhVcZCkSSE%3D"
+# Função para codificar a imagem
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
 
-# Inicialize o cliente OpenAI para gpt-3.5-turbo
-client = openai.Completion.create(
-    engine="text-davinci-003",
-    prompt=f"Descreva a imagem a seguir:\n{imagem_url}",
-    max_tokens=300
-)
+# Abrir o diálogo de arquivo para escolher uma imagem
+root = Tk()
+root.withdraw()  # Ocultar a janela principal
+image_path = filedialog.askopenfilename(title="Escolha uma imagem", filetypes=[("Imagens", "*.png;*.jpg;*.jpeg")])
+root.destroy()  # Fechar a janela Tkinter após o diálogo de arquivo ser fechado
 
-# Obtenha a resposta do modelo
-resposta = client['choices'][0]['text']
+# Verificar se o usuário selecionou uma imagem
+if not image_path:
+    print("Nenhuma imagem selecionada.")
+else:
+    # Obter a string base64
+    base64_image = encode_image(image_path)
 
-# Imprima a resposta
-print(resposta)
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}"
+    }
+
+    payload = {
+        "model": "gpt-4-vision-preview",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "O que há nesta imagem?"
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}"
+                        }
+                    }
+                ]
+            }
+        ],
+        "max_tokens": 300
+    }
+
+    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+
+    print(response.json())
