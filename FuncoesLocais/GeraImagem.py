@@ -11,8 +11,13 @@ else:
     # Configure a chave de API
     openai.api_key = chave
 
+    # Solicite que o usuário forneça um prompt
+    print(">>>> F3RL4i <<<<")
+    ordem = input("O que você quer que eu desenhe?\n ")
+
+
     # Defina o prompt e gere a imagem
-    ordem = 'Desenhe um foguete viajando para a Lua'
+    #ordem = 'Desenhe um foguete viajando para a Lua'
     resultado = openai.Image.create(
         prompt=ordem,
         n=2,
