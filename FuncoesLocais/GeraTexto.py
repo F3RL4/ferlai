@@ -1,5 +1,5 @@
-import os
 import openai
+import os
 
 # Recupere a chave de API de uma variável de ambiente
 chave = os.getenv("OPENAI_API_KEY")
@@ -11,21 +11,23 @@ else:
     # Configure a chave de API
     openai.api_key = chave
 
-    # Solicite que o usuário forneça um prompt
+    # Solicite que o usuário faça uma pergunta
     print(">>>> F3RL4i <<<<")
-    ordem = input("Qual a sua pergunta?\n ")
+    pergunta_usuario = input("O que você quer saber? \n ")
 
+    # Crie uma solicitação para a IA responder à pergunta
+    solicitacao = f"Pergunta: {pergunta_usuario}\nResposta:"
 
-    # Defina o prompt e gere a imagem
-    #ordem = 'Desenhe um foguete viajando para a Lua'
-    resultado = openai.Image.create(
-        prompt=ordem,
-        n=2,
-        size="1024x1024"
+    # Gere a resposta com base na solicitação
+    resultado = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=solicitacao,
+        max_tokens=150,
+        temperature=0
     )
 
-    # Obtenha a URL da imagem gerada
-    resultado_final = resultado['data'][0]['url']
+    # Obtenha a resposta gerada
+    resposta_gerada = resultado['choices'][0]['text']
 
-    # Imprima a URL
-    print(resultado_final)
+    # Imprima a resposta
+    print(f"Resposta: {resposta_gerada}")
