@@ -1,8 +1,13 @@
+from flask import Flask, render_template, request, jsonify, send_file
 import os
 import openai
 import webbrowser
 from tkinter import simpledialog
-import tkinter as tk  # Adicionando a importação de tkinter
+import tkinter as tk
+import requests
+import io
+
+app = Flask(__name__)
 
 def obter_chave_api():
     """Obtém a chave de API da OpenAI da variável de ambiente."""
@@ -35,18 +40,24 @@ def abrir_link_no_navegador(url):
     """Abre o link automaticamente no navegador."""
     webbrowser.open(url, new=2)
 
-def main():
-    """Função principal para executar o script."""
+# ... (código anterior)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/processar', methods=['POST'])
+def processar():
     chave_api = obter_chave_api()
     configurar_chave_api(chave_api)
 
-    prompt_usuario = solicitar_prompt()
+    prompt_usuario = request.form['pergunta']
 
     if prompt_usuario:
         url_imagem = gerar_imagem(prompt_usuario)
 
-        # Abra o link automaticamente no navegador
-        abrir_link_no_navegador(url_imagem)
+        # Não abra o link automaticamente, apenas retorne a URL
+        return jsonify(resposta="Imagem gerada!", url_imagem=url_imagem)
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True)
