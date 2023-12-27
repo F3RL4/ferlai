@@ -7,6 +7,13 @@ from tkinter import Tk, filedialog
 # Chave da API OpenAI
 api_key = os.getenv("OPENAI_API_KEY")
 
+# Verifique se a chave de API está presente
+if api_key is None:
+    print("A chave de API da OpenAI não foi encontrada. Configure a variável de ambiente OPENAI_API_KEY.")
+else:
+    # Configure a chave de API
+    openai.api_key = api_key
+
 # Função para codificar a imagem
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
