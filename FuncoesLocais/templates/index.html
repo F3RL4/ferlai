@@ -1,27 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ request.accept_languages.best_match(['en', 'pt']) }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA Pergunta e Resposta</title>
+    <title>F3RL4i</title>
 </head>
+
 <body>
-    <h1>IA Pergunta e Resposta</h1>
+    <h1>F3RL4i - IMAGENS</h1>
 
     <form id="perguntaForm">
-        <label for="pergunta">Digite sua pergunta:</label>
-        <input type="text" id="pergunta" placeholder="O que você quer saber?" required>
+        <label for="pergunta">O que quer que eu desenhe:</label>
+        <input type="text" id="pergunta" placeholder="Insira uma descrição aqui" required>
         <button type="button" onclick="enviarPergunta()">Enviar</button>
         <button type="button" onclick="limpar()">Limpar</button>
     </form>
 
-    <h2>Resposta:</h2>
-    <p id="resposta"></p>
+    <div id="respostaSection" style="display: none;">
+        <h2>Resposta:</h2>
+        <p id="resposta"></p>
+    </div>
 
-    <h2>Imagem:</h2>
-    <div id="imagemContainer"></div>
-    
-    <button type="button" onclick="salvarImagem()">Salvar Imagem</button>
+    <div id="imagemSection" style="display: none;">
+        <h2>Imagem:</h2>
+        <div id="imagemContainer"></div>
+    </div>
 
     <script>
         function enviarPergunta() {
@@ -31,10 +35,6 @@
                 alert('Por favor, insira uma pergunta antes de enviar.');
                 return;
             }
-
-            // Adicionar feedback de carregamento
-            document.getElementById('resposta').innerText = 'Processando...';
-            document.getElementById('imagemContainer').innerHTML = '';
 
             // Desativar os botões durante o processamento
             document.getElementById('perguntaForm').querySelectorAll('button').forEach(button => {
@@ -55,6 +55,12 @@
                 document.getElementById('resposta').innerText = data.resposta;
 
                 // Exibir a imagem na mesma janela
+                var imagemSection = document.getElementById('imagemSection');
+                var respostaSection = document.getElementById('respostaSection');
+
+                imagemSection.style.display = 'block';
+                respostaSection.style.display = 'block';
+
                 var imagemContainer = document.getElementById('imagemContainer');
                 imagemContainer.innerHTML = `<img src="${data.url_imagem}" alt="Imagem gerada">`;
             })
@@ -72,28 +78,15 @@
 
         function limpar() {
             document.getElementById('perguntaForm').reset();
+
+            var imagemSection = document.getElementById('imagemSection');
+            var respostaSection = document.getElementById('respostaSection');
+
+            imagemSection.style.display = 'none';
+            respostaSection.style.display = 'none';
+
             document.getElementById('resposta').innerText = '';
             document.getElementById('imagemContainer').innerHTML = '';
-        }
-
-        function salvarImagem() {
-            // Obter o URL da imagem
-            var imagemSrc = document.getElementById('imagemContainer').getElementsByTagName('img')[0].src;
-
-            // Criar um link de download oculto
-            var link = document.createElement('a');
-            link.href = imagemSrc;
-            link.download = 'imagem_gerada.png';
-            link.style.display = 'none';
-            
-            // Adicionar o link ao corpo do documento
-            document.body.appendChild(link);
-
-            // Simular um clique no link para iniciar o download
-            link.click();
-
-            // Remover o link do corpo do documento
-            document.body.removeChild(link);
         }
     </script>
 </body>
