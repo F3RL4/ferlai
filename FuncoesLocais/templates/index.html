@@ -14,12 +14,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             height: 100vh;
         }
 
         h1 {
             color: #4CAF50;
+            margin-top: 50px;
         }
 
         button {
@@ -39,6 +40,9 @@
 </head>
 
 <body>
+    <!-- Adicionando a logo com caminho relativo -->
+    <img src="{{ url_for('static', filename='imagens/logo.png') }}" alt="Logo F3RL4i">
+
     <h1>F3RL4i - Página Inicial</h1>
 
     <button onclick="redirecionarParaImagem()">Ir para a Página de Imagem</button>

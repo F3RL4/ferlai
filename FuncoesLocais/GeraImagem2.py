@@ -5,7 +5,7 @@ import webbrowser
 from tkinter import simpledialog
 import tkinter as tk
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 def obter_chave_api():
     """Obtém a chave de API da OpenAI da variável de ambiente."""
