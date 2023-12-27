@@ -4,8 +4,6 @@ import openai
 import webbrowser
 from tkinter import simpledialog
 import tkinter as tk
-import requests
-import io
 
 app = Flask(__name__)
 

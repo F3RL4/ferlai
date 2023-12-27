@@ -27,6 +27,20 @@
         function enviarPergunta() {
             var pergunta = document.getElementById('pergunta').value;
 
+            if (!pergunta.trim()) {
+                alert('Por favor, insira uma pergunta antes de enviar.');
+                return;
+            }
+
+            // Adicionar feedback de carregamento
+            document.getElementById('resposta').innerText = 'Processando...';
+            document.getElementById('imagemContainer').innerHTML = '';
+
+            // Desativar os botões durante o processamento
+            document.getElementById('perguntaForm').querySelectorAll('button').forEach(button => {
+                button.disabled = true;
+            });
+
             // Enviar a pergunta para o servidor
             fetch('/processar', {
                 method: 'POST',
@@ -44,7 +58,16 @@
                 var imagemContainer = document.getElementById('imagemContainer');
                 imagemContainer.innerHTML = `<img src="${data.url_imagem}" alt="Imagem gerada">`;
             })
-            .catch(error => console.error('Erro:', error));
+            .catch(error => {
+                console.error('Erro:', error);
+                document.getElementById('resposta').innerText = 'Erro ao processar a pergunta.';
+            })
+            .finally(() => {
+                // Ativar os botões após o processamento
+                document.getElementById('perguntaForm').querySelectorAll('button').forEach(button => {
+                    button.disabled = false;
+                });
+            });
         }
 
         function limpar() {
