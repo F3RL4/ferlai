@@ -44,6 +44,10 @@ def abrir_link_no_navegador(url):
 def index():
     return render_template('index.html')
 
+@app.route('/imagem.html')
+def imagem():
+    return render_template('imagem.html')
+
 @app.route('/processar', methods=['POST'])
 def processar():
     chave_api = obter_chave_api()
