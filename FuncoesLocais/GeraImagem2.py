@@ -38,8 +38,6 @@ def abrir_link_no_navegador(url):
     """Abre o link automaticamente no navegador."""
     webbrowser.open(url, new=2)
 
-# ... (código anterior)
-
 @app.route('/')
 def index():
     return render_template('index.html')
